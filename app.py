@@ -385,7 +385,7 @@ if 'places_df' not in st.session_state:
 with st.expander("Input Form", expanded = True):
     form = st.form("Form")
     # form.warning('Please enter only any one of ZIP Code / Area. Do not enter both as it may produce incorrect results. Also, do not include any special characters like " , " (comma) , " . " (full-stop), etc.')
-    zip_code = form.text_input("ZIP Code or Post Code:", help = "You can enter multiple ZIP Codes separated by a space between them, for example: 10001 10009")
+    zip_code = form.text_input("ZIP Code or Post Code:")
     area = form.text_input("Area:", help = "Please enter the area in this format -> Area Name City Name", value = "Notting Hill London")
     keyword = form.text_input("Search Keyword:", value = 'construction')
     # negative_keyword = form.text_input("Negative Keyword:")
