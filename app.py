@@ -75,7 +75,7 @@ def get_places_df(url_query):
         
         for place_id in place_ids:
             dparams = {
-                'key': 'AIzaSyAr04-Czm2Nkdid9k_YKaNKJN7Mm59xS30',
+                'key': 'AIzaSyDfyFnsTpBkfrC6vMvmAbnwxGENdWjIyYc',
                 'placeid': place_id,
                 'language': 'en'
             }
