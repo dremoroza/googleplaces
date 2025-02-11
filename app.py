@@ -55,7 +55,12 @@ def get_places_df(url_query):
         print(url_query)
         r = requests.get(url_query)
         r = r.json()
-        next_page_token = r['next_page_token']
+        next_page_token = ''
+        third_page_token = ''
+        try:
+            next_page_token = r['next_page_token']
+        except:
+            next_page_token = ''
         r = r['results']
         
 
@@ -112,7 +117,10 @@ def get_places_df(url_query):
             second_page_url = url_query + "&pagetoken=" + next_page_token
             s = requests.get(second_page_url)
             s = s.json()
-            third_page_token = s['next_page_token']
+            try:
+                 third_page_token = s['next_page_token']
+            except:
+                 third_page_token = ''
             s = s['results']
             
 
@@ -244,13 +252,17 @@ def get_places_df(url_query):
         all_place_ids = []
 
         for query_ in url_query:
-            print(query_)
             r = requests.get(query_)
             r = r.json()
+            next_page_token = ''
+            third_page_token = ''
+            try:
+                next_page_token = r['next_page_token']
+            except:
+                 next_page_token = ''
             r = r['results']
 
             temp_names_list = [r[el]['name'] for el in range(len(r))]
-
             temp_rating = []
             temp_user_ratings_total = []
 
@@ -264,8 +276,6 @@ def get_places_df(url_query):
                 except:
                     temp_user_ratings_total.append('-')
 
-            # temp_rating = [r[el]['rating']  for el in range(len(r))]
-            # temp_user_ratings_total = [r[el]['user_ratings_total'] for el in range(len(r))]
             temp_address = [r[el]['formatted_address'] for el in range(len(r))]
             temp_place_ids = [r[el]['place_id'] for el in range(len(r))]
 
@@ -274,12 +284,16 @@ def get_places_df(url_query):
             user_ratings_total = []
             address = []
             place_ids = []
-
-            print('NAME', temp_names_list)
-            print('RATING', temp_rating)
-            print('USERTOTALRATING', temp_user_ratings_total)
-            print('ADDRESS', temp_address)
-            print('PLACE ID', temp_place_ids)
+            s_names_list = []
+            s_rating = []
+            s_user_ratings_total = []
+            s_address = []
+            s_place_ids = []
+            t_names_list = []
+            t_rating = []
+            t_user_ratings_total = []
+            t_address = []
+            t_place_ids = []
 
             for el in range(len(temp_place_ids)):
                 place_id = temp_place_ids[el]
@@ -290,25 +304,23 @@ def get_places_df(url_query):
                     address.append(temp_address[el])
                     place_ids.append(temp_place_ids[el])
 
-            # for n, r, urt, a, pi in zip(temp_names_list, temp_rating, temp_user_ratings_total, temp_address, temp_place_ids):
-            #     if pi not in all_place_ids:
-            #         names_list.append(n)
-            #         rating.append(r)
-            #         user_ratings_total.append(urt)
-            #         address.append(a)
-            #         place_ids.append(pi)
 
             place_details_endpoint = 'https://maps.googleapis.com/maps/api/place/details/json'
             
             phone_numbers_list = []
             opening_hours_list = []
             place_urls = []
+            s_phone_numbers_list = []
+            s_opening_hours_list = []
+            s_place_urls = []
+            t_phone_numbers_list = []
+            t_opening_hours_list = []
+            t_place_urls = []
             
             for place_id in place_ids:
-                # if place_id in all_place_ids:
-                #     continue
+
                 dparams = {
-                    'key': 'AIzaSyDIKu79D9uptTLQf3PMhAUIiwIVrXFoNRg',
+                    'key': 'AIzaSyDfyFnsTpBkfrC6vMvmAbnwxGENdWjIyYc',
                     'placeid': place_id,
                     'language': 'en'
                 }
@@ -333,16 +345,168 @@ def get_places_df(url_query):
                 opening_hours_list.append(opening_hours)
                 place_urls.append(url)
 
+            ################~~~~~~~~~~~ second    ~~~~~~~~~~~~~~############################
+            if next_page_token:   
+                second_page_url = query_ + "&pagetoken=" + next_page_token
+                s = requests.get(second_page_url)
+                s = s.json()
+                try:
+                    third_page_token = s['next_page_token']
+                except:
+                    third_page_token = ''
+                s = s['results']
 
-            all_names_list.extend(names_list)
-            print(all_names_list)
-            all_ratings_list.extend(rating)
-            all_user_ratings_total.extend(user_ratings_total)
-            all_address.extend(address)
-            all_phone_numbers.extend(phone_numbers_list)
-            all_opening_hours_list.extend(opening_hours_list)
-            all_place_urls.extend(place_urls)
-            all_place_ids.extend(place_ids)
+                s_temp_names_list = [s[el]['name'] for el in range(len(s))]
+                s_temp_rating = []
+                s_temp_user_ratings_total = []
+
+                for el in range(len(s)):
+                    try:
+                        s_temp_rating.append(s[el]['rating'])
+                    except:
+                        s_temp_rating.append('-')
+                    try:
+                        s_temp_user_ratings_total.append(s[el]['user_ratings_total'])
+                    except:
+                        s_temp_user_ratings_total.append('-')
+
+                s_temp_address = [s[el]['formatted_address'] for el in range(len(s))]
+                s_temp_place_ids = [s[el]['place_id'] for el in range(len(s))]
+
+                s_names_list = []
+                s_rating = []
+                s_user_ratings_total = []
+                s_address = []
+                s_place_ids = []
+
+                for el in range(len(s_temp_place_ids)):
+                    place_id = s_temp_place_ids[el]
+                    if place_id not in all_place_ids:
+                        s_names_list.append(s_temp_names_list[el])
+                        s_rating.append(s_temp_rating[el])
+                        s_user_ratings_total.append(s_temp_user_ratings_total[el])
+                        s_address.append(s_temp_address[el])
+                        s_place_ids.append(s_temp_place_ids[el])
+
+
+                s_place_details_endpoint = 'https://maps.googleapis.com/maps/api/place/details/json'
+                
+                s_phone_numbers_list = []
+                s_opening_hours_list = []
+                s_place_urls = []
+                
+                for place_id in s_place_ids:
+
+                    dparams = {
+                        'key': 'AIzaSyDfyFnsTpBkfrC6vMvmAbnwxGENdWjIyYc',
+                        'placeid': place_id,
+                        'language': 'en'
+                    }
+                    s = requests.get(s_place_details_endpoint, params=dparams)
+                    s = s.json()  # See what we got
+                    s = s['result']
+                    
+                    try:
+                        s_place_phone_number = s['international_phone_number']
+                    except:
+                        s_place_phone_number = '-'
+                    try:
+                        s_opening_hours = '\n'.join(s['opening_hours']['weekday_text'])
+                    except: 
+                        s_opening_hours = '-'
+                    try:
+                        s_url = s['url']
+                    except:
+                        s_url = '-'
+                    
+                    s_phone_numbers_list.append(s_place_phone_number)
+                    s_opening_hours_list.append(s_opening_hours)
+                    s_place_urls.append(s_url)    
+            
+            ################~~~~~~~~~~~ third    ~~~~~~~~~~~~~~############################
+            if third_page_token:   
+                third_page_url = query_ + "&pagetoken=" + third_page_token
+                t = requests.get(third_page_url)
+                t = t.json()
+                t =  t['results']
+
+                t_temp_names_list = [t[el]['name'] for el in range(len(t))]
+                t_temp_rating = []
+                t_temp_user_ratings_total = []
+
+                for el in range(len(t)):
+                    try:
+                        t_temp_rating.append(t[el]['rating'])
+                    except:
+                        t_temp_rating.append('-')
+                    try:
+                        t_temp_user_ratings_total.append(t[el]['user_ratings_total'])
+                    except:
+                        t_temp_user_ratings_total.append('-')
+
+                t_temp_address = [t[el]['formatted_address'] for el in range(len(t))]
+                t_temp_place_ids = [t[el]['place_id'] for el in range(len(t))]
+
+                t_names_list = []
+                t_rating = []
+                t_user_ratings_total = []
+                t_address = []
+                t_place_ids = []
+
+                for el in range(len(t_temp_place_ids)):
+                    place_id = t_temp_place_ids[el]
+                    if place_id not in all_place_ids:
+                        t_names_list.append(t_temp_names_list[el])
+                        t_rating.append(t_temp_rating[el])
+                        t_user_ratings_total.append(t_temp_user_ratings_total[el])
+                        t_address.append(t_temp_address[el])
+                        t_place_ids.append(t_temp_place_ids[el])
+
+
+                t_place_details_endpoint = 'https://maps.googleapis.com/maps/api/place/details/json'
+                
+                t_phone_numbers_list = []
+                t_opening_hours_list = []
+                t_place_urls = []
+                
+                for place_id in t_place_ids:
+
+                    dparams = {
+                        'key': 'AIzaSyDfyFnsTpBkfrC6vMvmAbnwxGENdWjIyYc',
+                        'placeid': place_id,
+                        'language': 'en'
+                    }
+                    t = requests.get(t_place_details_endpoint, params=dparams)
+                    t = t.json()  # See what we got
+                    t = t['result']
+                    
+                    try:
+                        t_place_phone_number = t['international_phone_number']
+                    except:
+                        t_place_phone_number = '-'
+                    try:
+                        t_opening_hours = '\n'.join(t['opening_hours']['weekday_text'])
+                    except: 
+                        t_opening_hours = '-'
+                    try:
+                        t_url = t['url']
+                    except:
+                        t_url = '-'
+                    
+                    t_phone_numbers_list.append(t_place_phone_number)
+                    t_opening_hours_list.append(t_opening_hours)
+                    t_place_urls.append(t_url)   
+
+
+
+            all_names_list.extend(names_list + s_names_list + t_names_list)
+            all_ratings_list.extend(rating + s_rating + t_rating)
+            all_user_ratings_total.extend(user_ratings_total + s_user_ratings_total + t_user_ratings_total)
+            all_address.extend(address + s_address + t_address)
+            all_phone_numbers.extend(phone_numbers_list + s_phone_numbers_list + t_phone_numbers_list)
+            all_opening_hours_list.extend(opening_hours_list  + s_opening_hours_list  + t_opening_hours_list )
+            all_place_urls.extend(place_urls + s_place_urls + t_place_urls)
+            all_place_ids.extend(place_ids + s_place_ids + t_place_ids)
 
 
         all_names_list = [str(el) for el in all_names_list]
@@ -385,9 +549,9 @@ if 'places_df' not in st.session_state:
 with st.expander("Input Form", expanded = True):
     form = st.form("Form")
     # form.warning('Please enter only any one of ZIP Code / Area. Do not enter both as it may produce incorrect results. Also, do not include any special characters like " , " (comma) , " . " (full-stop), etc.')
-    zip_code = form.text_input("ZIP Code or Post Code:")
-    area = form.text_input("Area:", help = "Please enter the area in this format -> Area Name City Name", value = "Notting Hill London")
-    keyword = form.text_input("Search Keyword:", value = 'construction')
+    zip_code = form.text_input("ZIP Code or Post Code:", help = "You can enter multiple ZIP Codes separated by a space between them, for example: 10001 10009")
+    area = form.text_input("Area:", help = "Please enter the area in this format -> Area Name City Name")
+    keyword = form.text_input("Search Keyword:")
     # negative_keyword = form.text_input("Negative Keyword:")
     submit = form.form_submit_button("Submit")
 
