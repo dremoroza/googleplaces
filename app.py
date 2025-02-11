@@ -69,13 +69,29 @@ def get_places_df(url_query):
         user_ratings_total = [r[el]['user_ratings_total'] for el in range(len(r))]
         address = [r[el]['formatted_address'] for el in range(len(r))]
         place_ids = [r[el]['place_id'] for el in range(len(r))]
+        s_names_list = []
+        s_rating = []
+        s_user_ratings_total = []
+        s_address = []
+        s_place_ids = []
+        t_names_list = []
+        t_rating = []
+        t_user_ratings_total = []
+        t_address = []
+        t_place_ids = []
 
         place_details_endpoint = 'https://maps.googleapis.com/maps/api/place/details/json'
         
         phone_numbers_list = []
         opening_hours_list = []
         place_urls = []
-        
+        s_phone_numbers_list = []
+        s_opening_hours_list = []
+        s_place_urls = []
+        t_phone_numbers_list = []
+        t_opening_hours_list = []
+        t_place_urls = []
+
         for place_id in place_ids:
             dparams = {
                 'key': 'AIzaSyDfyFnsTpBkfrC6vMvmAbnwxGENdWjIyYc',
@@ -221,13 +237,13 @@ def get_places_df(url_query):
                 t_place_urls.append(url)
             
 
-        t_names_list = [str(el) for el in t_names_list]
-        t_rating = [str(el) for el in t_rating]
-        t_user_ratings_total = [str(el) for el in t_user_ratings_total]
-        t_address = [str(el) for el in t_address]
-        t_phone_numbers_list = [str(el) for el in t_phone_numbers_list]
-        t_opening_hours_list = [str(el) for el in t_opening_hours_list]
-        t_place_urls = [str(el) for el in t_place_urls]
+            t_names_list = [str(el) for el in t_names_list]
+            t_rating = [str(el) for el in t_rating]
+            t_user_ratings_total = [str(el) for el in t_user_ratings_total]
+            t_address = [str(el) for el in t_address]
+            t_phone_numbers_list = [str(el) for el in t_phone_numbers_list]
+            t_opening_hours_list = [str(el) for el in t_opening_hours_list]
+            t_place_urls = [str(el) for el in t_place_urls]
 
 
         df = pd.DataFrame()
